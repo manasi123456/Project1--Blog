@@ -12,15 +12,15 @@ const createBlog = async function (req, res) {
   if (!myTitle) {
     res.status(401).send({error : "Title missing"})
   }
-  if (myTitle.length<2) {
+  if (!myTitle.length>2) {
     res.status(401).send({error : "length of title must be greater than 2"})
   }
  
   if (!myBody) {
     res.status(401).send({error : "Body missing"})
   }
-  if (myBody.length<50) {
-    res.status(401).send({error : "length of body must be greater than 50"})
+  if (!myBody.length>5) {
+    res.status(401).send({error : "length of body must be greater than 5"})
   }
 
   if (!myCategory){
@@ -156,7 +156,9 @@ const deleteByParams = async (req, res) => {
   try {
     let Data = req.query
     let authorsId = Data.authorsId 
-    if (!(authorsId.match(/^[0-9a-fA-F]{24}$/))) {
+    console.log(authorsId);
+    let isMatchedAuthorId = authorsId.match(/^[0-9a-fA-F]{24}$/)
+    if (!isMatchedAuthorId) {
       res.status(401).send({error: "authors Id is not valid"})
       // Yes, it's a valid ObjectId, proceed with `findById` call. 
     }
@@ -169,7 +171,7 @@ const deleteByParams = async (req, res) => {
         .status(401)
         .send({ error: 'Inavlid Id---Invalid Length of Id' })
     }
-    const isAuthor = await authorModel.findById({authorsId})
+    const isAuthor = await authorModel.findById(authorsId)
     if (!isAuthor) {
       return res
         .status(404)
